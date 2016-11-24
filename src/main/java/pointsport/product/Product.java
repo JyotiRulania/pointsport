@@ -4,6 +4,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
+
+import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 public class Product {
@@ -61,6 +64,19 @@ public class Product {
 	}
 	@Override
 	public String toString() {
-		return "Product [pId=" + pId + ", pName=" + pName + "]";
+		return "Product [pId=" + pId + ", pName=" + pName + ", pDescription=" + pDescription
+				+ ", pCategory=" + pCategory + ", pPrice=" + pPrice + ", pQty="
+				+ pQuantity + ", pImage=" + pImage + "]";
 	}
+	@Transient
+	private MultipartFile ProductFile;
+
+	public MultipartFile getProductFile() {
+		return ProductFile;
+	}
+
+	public void setProductFile(MultipartFile productFile) {
+		ProductFile = productFile;
+	}
+	
 }

@@ -30,18 +30,46 @@ myApp.controller("myCntrl", function($scope){
 	<br>
 		<table class="table ">
 			<tbody>
+			<tr>
+			<th>Product Name</th>
+			<th>Product category</th>
+			<th> Product Description </th>
+			<th> Product Price</th>
+			<th> Product Quantity</th>
+			<th> Product Image</th>
+			</tr>
 				<tr ng-repeat="x in data">
-                <td>
-					<label>Product Name :&nbsp;{{x.pName}}</label>
+                <td>{{x.pName}}</td>
+                  <td>{{x.pCategory}}</td>
+                   <td>{{x.pDescription}}</td>
+                    <td>{{x.pPrice}}</td>
+                     <td>{{x.pQuantity}}</td>
+                     <td><img
+						ng-src="${pageContext.request.contextPath}/{{ x.pImage }}" height=" 50px" width="100px"></td>
+
+                     <td>
 						<div class="btn1">
-								<a href="updateProduct/{{x.ProductId}}"
-									class="button3">UPDATE</a>
-							</div>
-						<div class="btn1">
-								<a href="DeleteProductFromDB/{{x.ProductId}}"
+							<a href="${pageContext.request.contextPath}/view/{{x.pId}}"
+								class="button3 ">VIEW</a>
+						</div>
+						<%
+						if (request.isUserInRole("ADMIN"))
+						{
+							%>
+							<td><div class="btn1"><a href="updateproduct/{{x.pId}}" class="button3">UPDATE</a></div></td>
+							<td>						<div class="btn1">
+								<a href="DeleteProductFromDB/{{x.pId}}"
 									class="button3">DELETE</a>
 							</div>
 						</td>
+							<%							
+						}
+						%>
+
+						
+					
+                  
+						
 					</tr>
 			 </tbody>
 	    </table>

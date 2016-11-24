@@ -1,11 +1,21 @@
 package pointsport;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +24,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import pointsport.category.CategoryDAO;
 import pointsport.product.ProductDAO;
+import pointsport.usermodel.User;
+import pointsport.usermodel.UserDAO;
+import pointsport.userrolemodel.UserRoleDao;
+import pointsport.cartmodel.Cart;
+import pointsport.cartmodel.CartDAO;
 import pointsport.category.Category;
 import pointsport.product.*;
 
@@ -24,12 +39,51 @@ public class HelloController{
 CategoryDAO cdao;
 
 @Autowired
+UserDAO udao;
+
+@Autowired
 ProductDAO pdao;
+
+@Autowired
+ UserRoleDao urdao;
+
+@Autowired
+CartDAO crdao;
+
+
+@Autowired
+ServletContext context;
+
+	public String test() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null && !auth.getName().equals("anonymousUser")) {
+			System.out.println(auth.getName());
+			// System.out.println("User present");
+			return "false";
+		} else {
+			System.out.println("User not present");
+			return "true";
+		}
 	
+	}
+	
+	@RequestMapping(value = "/initiateFlow", method = RequestMethod.GET)
+	public String redirect(HttpServletRequest request) {
+
+		String retval = "";
+
+		if (request.getUserPrincipal() == null)
+			retval = "redirect:/cart?user=none";
+		else
+			retval = "redirect:/cart?user=" + request.getUserPrincipal().getName();
+
+		return retval;
+	}
 
 	@RequestMapping("/")
 	public ModelAndView index(){
 		//request handler method
+		urdao.generateUserRoles();
 		ModelAndView model = new ModelAndView("index");
 		return model;
 		
@@ -72,10 +126,56 @@ public ModelAndView contact(){
 public ModelAndView signup(){
 	//request handler method
 	ModelAndView model = new ModelAndView("SignUp");
+	model.addObject("User",new User());
 	return model;
 }
+@RequestMapping(value="/AddUserToDB",method=RequestMethod.POST)
+public ModelAndView AddUserToDB(@ModelAttribute("User") User p, BindingResult bind) {
+	ModelAndView mav = new ModelAndView("SignUp");
 
-@RequestMapping("/login")
+	System.out.println("In User Insert");
+
+	if (bind.hasErrors()) {
+		mav.addObject("User", p);
+	} else {
+		if (p.getPassword().equals(p.getCPassword())) {
+			List<User> list = udao.getAllUsers();
+
+			System.out.println(list);
+
+			boolean usermatch = false;
+
+			for (User u : list) {
+				if (p.getUsername().equals(u.getUsername())) {
+					usermatch = true;
+					break;
+				}
+			}
+
+			if (usermatch == false) {
+				udao.insertUser(p);
+
+				mav.addObject("User", new User());
+
+				mav.addObject("success", "success");
+			} else {
+				mav.addObject("User",p);
+
+				mav.addObject("useralreadyexists", "useralreadyexists");
+			}
+		} else {
+			mav.addObject("User", p);
+
+			mav.addObject("passwordmismatch", "passwordmismatch");
+		}
+
+	}
+
+	return mav;
+	
+}
+
+@RequestMapping("/loginpage")
 public ModelAndView login(){
 	//request handler method
 	ModelAndView model = new ModelAndView("login");
@@ -136,7 +236,17 @@ public ModelAndView UpdateCategory(@PathVariable("cid") int cid){
 @RequestMapping(value="/UpdateCategoryToDB", method=RequestMethod.POST)
 public String UpdateCategorytoDB(@ModelAttribute("Category") Category c){
 	ModelAndView model = new ModelAndView("Category");
+	Category c_old = cdao.getCategory(c.getCategoryId());
 	cdao.update(c);	
+	List<Product> list = pdao.getProducts();
+	for(Product p :list)
+	{
+		if(p.getpCategory().equals(c_old.getCategoryName()))
+		{
+			p.setpCategory(c.getCategoryName());
+			pdao.update(p);
+			}
+	}
 	return "redirect:/category";
 }
 
@@ -182,35 +292,182 @@ public ModelAndView AddProduct(){
    //request handler method
 	ModelAndView model = new ModelAndView("addproduct");
    model.addObject("Product",new Product());
+   
+   List<Category> list = cdao.getCategories();
+   model.addObject("AllCategories",list);
 		return model;
 }
 
-@RequestMapping(value="/AddProductToDB", method=RequestMethod.POST)
-public String AddProductToDB(@ModelAttribute("Product") Product p){
-   //request handler method
-	ModelAndView model = new ModelAndView("Product");
-	//system.out.println(p.getcname)
-	pdao.insert(p);
-	model.addObject("Product",new Product());
-		return "redirect:/product";
+@RequestMapping("/view/{productID}")
+public ModelAndView addproduct1(@PathVariable("productID") int prodid) {
+
+	ModelAndView mav = new ModelAndView("views");
+
+	System.out.println(prodid);
+
+	Product p = pdao.getProduct(prodid);
+
+	if (p != null) {
+		mav.addObject("ProductName", p.getpName());
+		mav.addObject("ProductDescription", p.getpDescription());
+		mav.addObject("ProductCategory", p.getpCategory());
+		mav.addObject("ProductPrice", p.getpPrice());
+		mav.addObject("ProductQty", p.getpQuantity());
+		mav.addObject("ProductImg", p.getpImage());
+		mav.addObject("ProductId", p.getpId());
+	}
+
+	return mav;
+
 }
 
-@RequestMapping("/ProductUpdate/{pid}")
+@RequestMapping(value = "/addToCart")
+public String addToCart(HttpServletRequest request) {
+
+	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	if (auth != null && !auth.getName().equals("anonymousUser")) {
+		System.out.println(request.getParameter("pid"));
+		System.out.println(request.getParameter("pqty"));
+
+		int qty = 1;
+
+		try {
+			qty = Integer.parseInt(request.getParameter("pqty"));
+
+			if (!(qty >= 1 && qty <= 10))
+				throw new Exception();
+		} catch (Exception e) {
+			System.out.println("Invalid Qty");
+		}
+
+		Cart c = new Cart();
+
+		c.setProductID(request.getParameter("pid"));
+		c.setQty("" + qty);
+
+		Product p = pdao.getProduct(Integer.parseInt(request.getParameter("pid")));
+
+		c.setName(p.getpName());
+		c.setPrice(p.getpPrice());
+
+		c.setUserName(auth.getName());
+
+		crdao.add(c);
+
+	}
+
+	return "redirect:initiateFlow";
+
+}
+
+@RequestMapping(value="/AddProductToDB" , method=RequestMethod.POST)
+public String AddProductToDB( @ModelAttribute("Product") Product p ){
+	ModelAndView mav = new ModelAndView("Product");
+	/*System.out.println(p.getpName());*/
+	pdao.insert(p);
+	mav.addObject("Product", new Product());
+	Product i1 = pdao.getProductWithMaxid();
+
+	System.out.println(i1.getpId());
+
+	try {
+		String path = context.getRealPath("/");
+
+		System.out.println(path);
+
+		File directory = null;
+
+		// System.out.println(ps.getProductWithMaxId());
+
+		if (p.getProductFile().getContentType().contains("image")) {
+			directory = new File(path + "\\resources\\images");
+
+			System.out.println(directory);
+
+			byte[] bytes = null;
+			File file = null;
+			bytes = p.getProductFile().getBytes();
+
+			if (!directory.exists())
+				directory.mkdirs();
+
+			file = new File(directory.getAbsolutePath() + System.getProperty("file.separator") + "image_"
+					+ i1.getpId() + ".jpg");
+
+			System.out.println(file.getAbsolutePath());
+
+			BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(file));
+			stream.write(bytes);
+			stream.close();
+
+		}
+
+		i1.setpImage("resources/images/image_" + i1.getpId() + ".jpg");
+
+		pdao.update(i1);
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return "redirect:/product";
+}
+
+@RequestMapping("/updateproduct/{pid}")
 public ModelAndView ProductUpdate(@PathVariable("pid") int pid){
    //request handler method
 	ModelAndView model = new ModelAndView("ProductUpdate");
 	Product p = pdao.getProduct(pid);
 	System.out.println(pid);
 	model.addObject("Product", p);
+	List<Category> list = cdao.getCategories();
+	model.addObject("Categories",list);
 		return model;
 }
 
-@RequestMapping(value="/UpdateProductToDB", method=RequestMethod.POST)
-public String UpdateProducttoDB(@ModelAttribute("Product") Product p){
-	ModelAndView model = new ModelAndView("Product");
-	pdao.update(p);	
-	return "redirect:/product";
+@RequestMapping(value = "/UpdateProductToDB", method=RequestMethod.POST)
+public String UpdateProductToDB( @ModelAttribute("Product") Product p) {
+
+	try {
+		String path = context.getRealPath("/");
+
+		System.out.println(path);
+
+		File directory = null;
+
+		// System.out.println(ps.getProductWithMaxId());
+
+		if (p.getProductFile().getContentType().contains("image")) {
+			directory = new File(path + "\\resources\\images");
+
+			System.out.println(directory);
+
+			byte[] bytes = null;
+			File file = null;
+			bytes = p.getProductFile().getBytes();
+
+			if (!directory.exists())
+				directory.mkdirs();
+
+			file = new File(directory.getAbsolutePath() + System.getProperty("file.separator") + "image_"
+					+ p.getpId() + ".jpg");
+
+			System.out.println(file.getAbsolutePath());
+
+			BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(file));
+			stream.write(bytes);
+			stream.close();
+
+		}
+
+		p.setpImage("resources/images/image_" + p.getpId() + ".jpg");
+	pdao.update(p);
+} catch (Exception e) {
+	e.printStackTrace();
 }
+
+	return "redirect:/product";
+
+}
+
 
 
 @RequestMapping("/DeleteProductFromDB/{pid}")
@@ -220,4 +477,21 @@ public String DeleteProduct(@PathVariable("pid") int pid){
 	return "redirect:/product";
 }
 
+@RequestMapping("/DeleteCategory/{cid}")
+public String deleteCategory(@PathVariable("cid") int cid){
+	System.out.println(cid);
+	Category c = cdao.getCategory(cid);
+	cdao.delete(cid);
+	List<Product> list = pdao.getProducts();
+	for(Product p:list)
+	{
+		if(p.getpCategory().equals(c.getCategoryName()))
+		{
+			p.setpCategory("-");
+			pdao.update(p);
+		}
+	}
+	pdao.delete(cid);
+	return "redirect:/product";
+}
 }

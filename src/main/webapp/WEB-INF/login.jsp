@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
     <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -15,6 +16,7 @@
 	<link href="${bootstrap}" rel="stylesheet" />
     <script src="${jqueryJs}"></script>
     <script src="${bootstrapjs}"></script>
+
 <style>
 .glyphicon.glyphicon-wrench {font-size: 100px;}
 .glyphicon.glyphicon-fire{  font-size: 100px;}
@@ -33,26 +35,51 @@
 <body>
 <c:import url="/head" />
 <div class="container-fluid">
+<div class="col-md-4 col-md-offset-4">
     <h3><b>Log In</b></h3> 
-    
-    
 </div>
-<hr>
-
-<div class="container-fluid">
-<form>
-<div class="form-group">
-    <label for="text">User Name:</label>
-    <input type="text" class="form-control" id="name">
-  </div>
-  <div class="form-group">
-    <label for="email">Password:</label>
-    <input type="email" class="form-control" id="email">
-  </div>
+</div>
   
-  <button type="submit" class="btn btn-default">Log In</button>
+<div class="container-fluid">
+<div class="col-md-4 col-md-offset-4">
+ 
+			<c:if test="${param.error != null}">
+				<div class="alert alert-danger">
+					<p>Invalid Username and password.</p>
+				</div>
+			</c:if>
+			<c:if test="${param.logout != null}">
+				<div class="alert alert-success">
+					<p>You have been logged out successfully.</p>
+				</div>
+			</c:if>  
+<form  method="post"  action="login" class="form-horizontal">
+<div class="container-fluid"> 
+
+    <div class="input-group">
+        <label class="text text-danger"><form:errors path="Username" /></label>
+        <input type="text" class="form-control" name="Username" path="Username"  placeholder="Enter your User Name"/>
+        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+    </div>
+    <br>
+
+    <div class="input-group">
+        <label class="text text-danger"><form:errors path="Password" /></label>
+        <input type="password" class="form-control" name="Password" path="Password" placeholder="Enter your Password"/>
+        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+    </div>
+   </br>
+     <div style="margin-top: 10px" class="form-group"></div> 
+       <!-- button -->
+       <div class="col-sm-12 controls">
+          <input type="submit" value="login" class="btn btn-warning btn-block">
+       </div>
+</div>
+
 </form>
 </div>
+</div>
+
 
 
 

@@ -1,75 +1,93 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-    <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+	pageEncoding="ISO-8859-1"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Home</title>
-
-	<spring:url value="/resources/references/css/bootstrap.min.css" var="bootstrap" />
-	<spring:url value="/resources/references/js/jquery.min.js" var="jqueryJs" />
-	<spring:url value="/resources/references/js/bootstrap.min.js" var="bootstrapjs" />
-
-	<link href="${bootstrap}" rel="stylesheet" />
-    <script src="${jqueryJs}"></script>
-    <script src="${bootstrapjs}"></script>
-<style>
-.glyphicon.glyphicon-wrench {font-size: 100px;}
-.glyphicon.glyphicon-fire{  font-size: 100px;}
-.glyphicon.glyphicon-ok{font-size: 100px;}
-
-
-</style>
-
+<c:import url="/head-meta" />
 </head>
 <body>
 
+	<c:import url="/head" />
 
-<div class="container-fluid">
-    <h3><b>Sign Up</b></h3> 
-    
-    
-</div>
-<hr>
+	<div class="container-fluid">
+		<div class="col-md-4 col-md-offset-4">
+			<h3><b>SIGN UP</b></h3>
+		</div>
+	</div>
+	<hr>
+  
+  <div class="container-fluid">
+	<div class="col-md-4 col-md-offset-4">
+	
+		<c:if test="${not empty useralreadyexists}">
+			<p class="alert alert-danger" ><b>OOPS!</b>&nbsp Username Does't Match</p>
+		</c:if>
 
-<div class="container-fluid">
-<form>
-<div class="form-group">
-    <label for="text">Name:</label>
-    <input type="text" class="form-control" id="name">
-  </div>
-  <div class="form-group">
-    <label for="email">Email address:</label>
-    <input type="email" class="form-control" id="email">
-  </div>
-  <div class="form-group">
-    <label for="password">Password:</label>
-    <input type="password" class="form-control" id="password">
-  </div>
-  <div class="form-group">
-    <label for="password">Confirm Password:</label>
-    <input type="password" class="form-control" id="password_cnfrm">
-  </div>
-  <div class="form-group">
-    <label for="comment">Address:</label>
-  <textarea class="form-control" rows="3" id="address"></textarea>
-  </div>
-  <div class="form-group">
-    <label for="number">Phone Number:</label>
-    <input type="number" class="form-control" id="p_number">
-  </div>
-  <button type="submit" class="btn btn-default">Sign Up</button>
-</form>
-</div>
+		<c:if test="${not empty Passwordmismatch}">	
+			<p class="alert alert-danger"><b>OOPS!</b>&nbsp Password Already Exists</p>			
+		</c:if>
 
-<br>
+		<c:if test="${not empty success}">			
+			<p class="alert alert-success"><b>GREAT</b>&nbsp Account Created Successfully</p>			
+		</c:if>
+	
+		<form:form class="form-horizontal" role="form" action="AddUserToDB" method="post" modelAttribute="User">
+			<div class="input-group" style="margin-top: 20px">
+				<span class="input-group-addon"><i
+					class="glyphicon glyphicon-user"></i></span> <form:input path="Username"
+					type="Username" class="form-control" placeholder="Enter your Username"/>	
+			</div>
+			<span class="text text-danger"><form:errors path="Username" /></span>
+			<br>
+			
+		<div class="input-group" >
+				<span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>	
+				<form:input path="Email" type="Email" class="form-control" placeholder="Enter your Email"/>		
+			</div>
+			<span class="text text-danger"><form:errors path="Email" /></span>
+			
+			<div  class="input-group" style="margin-top: 20px">
+				<span class="input-group-addon"><i
+					class="glyphicon glyphicon-lock"></i></span> <form:input path="Password"
+					type="Password" class="form-control" placeholder="Enter your Password"/>
+			</div>
+			<span class="text text-danger"><form:errors path="Password" /></span>
+			
+			<div class="input-group" style="margin-top: 20px">
+				<span class="input-group-addon"><i
+					class="glyphicon glyphicon-lock"></i></span> <form:input path="CPassword"
+					type="Cpassword" class="form-control" placeholder="Re-enter your password"/>
+			</div>
+			<div class="input-group" style="margin-top: 20px">
+				<span class="input-group-addon"><i
+					class="glyphicon glyphicon-earphone"></i></span> <form:input path="Phone"
+					type="Phone" class="form-control"
+					placeholder="Enter your Phone"/><br>	
+			</div>
+			<span  class="text text-danger"><form:errors path="Phone" /></span>
+			
+			
+			<div class="input-group" style="margin-top: 20px">
+				<span class="input-group-addon"><i
+					class="glyphicon glyphicon-map-marker"></i></span>
+				<form:textarea class="form-control" rows="3" path="Address"
+					placeholder="Enter your Address" name ="Address"></form:textarea>		
+			</div>
+			<span class="text text-danger"><form:errors path="Address" /></span>
+			
 
- <div class="footer " class="footer " style=" height:50px; background-color:#000000;"  >
- <br>
- <center>
- <span>&copy; 2016 </span>
- </center>
- </div>
+			<div style="margin-top: 25px" class="form-group">
+				<!-- Button -->
+
+				<div class="col-sm-12 controls">
+					<input type="submit" value="Sign Up" class="btn btn-warning btn-block">
+				</div>
+			</div>
+		</form:form>
+	</div>
+	</div>
+<c:import url="/foot" />
 </body>
 </html>

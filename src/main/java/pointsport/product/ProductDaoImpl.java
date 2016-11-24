@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
-import pointsport.category.Category;
+
 
 @Repository
 @EnableTransactionManagement
@@ -52,5 +52,22 @@ public class ProductDaoImpl implements ProductDAO {
 	public List<Product> getProducts() {
 	List<Product> list = this.getSessionFactory().getCurrentSession().createQuery("from Product").list();
 		return list;
+	}
+	
+	@Transactional
+	public Product getProductWithMaxid() {
+		{
+
+			List<Product> l = sessionFactory.getCurrentSession()
+					.createQuery("from Product as p where p.pId = ( select max(a.pId) from Product as a )")
+					.list();
+
+			if (l.size() > 0) {
+				return l.get(0);
+			} else {
+				return null;
+			}
+		}
+		
 	}	
 }
