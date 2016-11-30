@@ -8,8 +8,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
-
-
 @Repository
 @EnableTransactionManagement
 public class ProductDaoImpl implements ProductDAO {

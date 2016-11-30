@@ -14,7 +14,7 @@
 </head>
 	
 
-<body >
+<body style="background-color:cyan;" ng-app="myApp" ng-controller="abc">
 	<c:import url="/head"/>
 
 	<br>
@@ -82,5 +82,11 @@
 </div>
 <br><br>
 <br><br>
+<div class="footer " style=" height:50px; background-color:LightSeaGreen; margin-top:300px">
+ <br>
+ <center>
+ <span>&copy; 2016 </span>
+ </center>
+ </div>
 </body>
 </html>

@@ -17,7 +17,7 @@
 
 </script>
 
-<body ng-app="myApp" ng-controller="myCntrl">
+<body  ng-app="myApp" ng-controller="myCntrl">
 
 	<c:import url="/head" />
 	<br>
@@ -50,5 +50,11 @@
 	    </table>
 	</div>
 </body>
+<div class="footer " style=" height:50px; background-color:LightSeaGreen; margin-top:300px">
+ <br>
+ <center>
+ <span>&copy; 2016 </span>
+ </center>
+ </div>
 
 </html>

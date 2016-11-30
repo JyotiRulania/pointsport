@@ -8,11 +8,9 @@
 	<c:import url="/head-meta" />
 	
 </head>
-<body>
+<body style="background-color:cyan;" ng-app="myApp" ng-controller="abc">
 
 	<c:import url="/head" />
-
-  
 <div class="container">
   <br>
   <div id="myCarousel" class="carousel slide" data-ride="carousel">
@@ -27,15 +25,15 @@
     <!-- Wrapper for slides -->
     <div class="carousel-inner" role="listbox">
       <div class="item active">
-        <img src="resources/images/j.jpg" alt="Tesla" width="500" height="500" >
+        <img src="resources/images/q.jpg"  width="12000" height="500" >
       </div>
 
       <div class="item">
-        <img src="resources/images/a.jpg" alt="Chania" width="500" height="500">
+        <img src="resources/images/o.jpg"  width="12000" height="500">
       </div>
     
       <div class="item">
-        <img src="resources/images/image3.jpg" alt="Flower" width="500" height="500">
+        <img src="resources/images/p.jpg"  width="12000" height="500">
       </div>
 
       
@@ -65,7 +63,7 @@
     <div class="row">
     <div class="col-sm-12" >
     
-  <img src="resources/images/g.jpg" alt="Flower" width="200" height="200">
+  <img src="resources/images/a.jpg" alt="Flower" width="200" height="200">
       
     </div>
     </div>
@@ -95,7 +93,7 @@
     <div class="col-sm-4" >
     <div class="row">
     <div class="col-sm-12" >
-        <img src="resources/images/d.jpg" alt="Flower" width="200" height="200">
+        <img src="resources/images/b.jpg" alt="Flower" width="200" height="200">
     </div>
     </div>
     <div class="row">
@@ -110,7 +108,7 @@
   
 </div>
 
- <div class="footer " style=" height:50px; background-color:#000000; margin-top:30px" >
+ <div class="footer " style=" height:50px; background-color:LightSeaGreen; margin-top:30px" >
  <br>
  <center>
  <span>&copy; 2016 </span>

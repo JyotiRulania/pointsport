@@ -494,4 +494,6 @@ public String deleteCategory(@PathVariable("cid") int cid){
 	pdao.delete(cid);
 	return "redirect:/product";
 }
+
 }
+

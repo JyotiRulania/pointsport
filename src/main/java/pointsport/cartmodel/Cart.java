@@ -1,13 +1,10 @@
 package pointsport.cartmodel;
-
-import java.io.Serializable;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-public class Cart implements Serializable {
+public class Cart  {
 
 
      @Id
@@ -21,6 +18,7 @@ public class Cart implements Serializable {
       private String ProductID;
       private String UserName;
       private String ModeofPayement;
+      
 	public int getID() {
 		return ID;
 	}

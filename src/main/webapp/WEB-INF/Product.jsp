@@ -15,7 +15,7 @@ myApp.controller("myCntrl", function($scope){
 	$scope.data = ${Product};
 })
 </script>
-<body ng-app="myApp" ng-controller="myCntrl">
+<body  style="background-color:cyan;" ng-app="myApp" ng-controller="myCntrl">
 
 	<c:import url="/head" />
 	<br>
@@ -66,13 +66,16 @@ myApp.controller("myCntrl", function($scope){
 						}
 						%>
 
-						
-					
-                  
-						
 					</tr>
 			 </tbody>
 	    </table>
 	</div>
+	
+	<div class="footer " style=" height:50px; background-color:LightSeaGreen; margin-top:300px">
+ <br>
+ <center>
+ <span>&copy; 2016 </span>
+ </center>
+ </div>
 </body>
 </html>

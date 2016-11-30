@@ -24,7 +24,7 @@ public class CartDaoImpl implements CartDAO{
 	{
 		this.sessionFactory = sessionFactory;
 	}
-	
+	@Transactional
 	@SuppressWarnings("rawtypes")
 	public Cart getCartById(int cartId) 
 	{
@@ -35,7 +35,7 @@ public class CartDaoImpl implements CartDAO{
 		else
 			return null;
 	}
-
+	@Transactional
 	public Cart getCartByUsername(String Username) 
 	{		
 		List l = sessionFactory.getCurrentSession().createQuery("from Cart where Username = :Username").setString("Username", Username).list();
@@ -69,20 +69,21 @@ public class CartDaoImpl implements CartDAO{
 		sessionFactory.getCurrentSession().save(cart);
 		
 	}
-
+	@Transactional
 	public void delete(int i) 
 	{
 		sessionFactory.getCurrentSession().createQuery("delete from Cart as i where i.ID = :id").setInteger("id", i).executeUpdate();
 	}
 		
-	
+	@Transactional
 	public void deleteByProductId(int pid) 
 	{
 		sessionFactory.getCurrentSession().createQuery("delete from Cart as i where i.ProductId = :id").setInteger("id", pid).executeUpdate();
 		
 	}
-
+	
 	@SuppressWarnings("unchecked")
+    @Transactional
 	public List<Cart> getAllProduct() {
 		return sessionFactory.getCurrentSession().createQuery("from Cart").list();
 		

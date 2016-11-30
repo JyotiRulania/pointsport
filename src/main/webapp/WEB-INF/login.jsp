@@ -17,22 +17,10 @@
     <script src="${jqueryJs}"></script>
     <script src="${bootstrapjs}"></script>
 
-<style>
-.glyphicon.glyphicon-wrench {font-size: 100px;}
-.glyphicon.glyphicon-fire{  font-size: 100px;}
-.glyphicon.glyphicon-ok{font-size: 100px;}
 
-.footer {
- position:absolute;
-   bottom:0;
-   width:100%;
-   height:60px;   /* Height of the footer */
-   background:#000000;
-} 
-</style>
 
 </head>
-<body>
+<body style="background-color:cyan;" ng-app="myApp" ng-controller="abc">
 <c:import url="/head" />
 <div class="container-fluid">
 <div class="col-md-4 col-md-offset-4">
@@ -71,7 +59,7 @@
    </br>
      <div style="margin-top: 10px" class="form-group"></div> 
        <!-- button -->
-       <div class="col-sm-12 controls">
+       <div class="col-sm-12 controls" >
           <input type="submit" value="login" class="btn btn-warning btn-block">
        </div>
 </div>
@@ -83,7 +71,7 @@
 
 
 
- <div class="footer "  >
+ <div class="footer " style=" height:50px; background-color:LightSeaGreen; margin-top:300px">
  <br>
  <center>
  <span>&copy; 2016 </span>

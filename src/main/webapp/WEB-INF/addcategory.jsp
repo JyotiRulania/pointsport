@@ -17,6 +17,12 @@
 </form:form>
 
 </div>
-<body>
+<body style="background-color:cyan;" ng-app="myApp" ng-controller="abc">
+<div class="footer " style=" height:50px; background-color:LightSeaGreen; margin-top:300px">
+ <br>
+ <center>
+ <span>&copy; 2016 </span>
+ </center>
+ </div>
 </body>
 </html>

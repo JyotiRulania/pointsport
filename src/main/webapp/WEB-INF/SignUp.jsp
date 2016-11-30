@@ -7,7 +7,7 @@
 <head>
 <c:import url="/head-meta" />
 </head>
-<body>
+<body style="background-color:cyan;" ng-app="myApp" ng-controller="abc" >
 
 	<c:import url="/head" />
 
@@ -88,6 +88,11 @@
 		</form:form>
 	</div>
 	</div>
-<c:import url="/foot" />
+<div class="footer " style=" height:50px; background-color:LightSeaGreen; margin-top:60px">
+ <br>
+ <center>
+ <span>&copy; 2016 </span>
+ </center>
+ </div>
 </body>
 </html>
