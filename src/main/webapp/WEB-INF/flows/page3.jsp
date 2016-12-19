@@ -17,13 +17,7 @@
 	'use strict';
 	var myApp = angular.module('myApp', []);
 	///////////////
-	myApp
-			.factory(
-					'UserService',
-					[
-							'$http',
-							'$q',
-							function($http, $q) {
+	myApp.factory('UserService',['$http','$q',function($http, $q) {
 								return {
 									fetchAllItems : function() {
 										return $http
@@ -43,13 +37,7 @@
 								};
 							} ]);
 	///////////////
-	myApp
-			.controller(
-					"abc",
-					[
-							'$scope',
-							'UserService',
-							function($scope, $UserService) {
+	myApp.controller("abc",['$scope','UserService',function($scope, $UserService) {
 								$scope.TotalPrice = 0;
 								$scope.shippingAddress = '';
 								$scope.billingAddress = '';
@@ -108,14 +96,14 @@
 				<label>Shipping address</label><br> <br>
 				<textarea rows="5" placeholder="SHIPPING ADDRESS"
 					class="form-control" style="resize: none;"
-					ng-model="shippingAddress"></textarea>
+					ng-model="shippingAddress"  ng-disabled='true'></textarea>
 			</div>
 
 			<div>
 				<label>Billing address</label><br> <br>
 				<textarea rows="5" placeholder="BILLING ADDRESS"
 					class="form-control" style="resize: none;"
-					ng-model="billingAddress"></textarea>
+					ng-model="billingAddress" ng-disabled='true'></textarea>
 			</div>
 
 

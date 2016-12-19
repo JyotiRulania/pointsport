@@ -20,14 +20,20 @@
 <hr>
 
 <div class="container-fluid">
-<form>
+<form action="sendQuery" method="post">
 <div class="form-group">
-    <label for="text">Name:</label>
-    <input type="text" class="form-control" >
+    <label for="usr">Name:</label>
+    <input type="text" class="form-control" id="usr" >
   </div>
+  
+  <div class="form-group">
+    <label for="subject">Subject:</label>
+    <input type="text" class="form-control" name="subject" id="subject" >
+  </div>
+  
   <div class="form-group">
     <label for="email">Email address:</label>
-    <input type="email" class="form-control" id="email">
+    <input type="email" class="form-control" id="email" name="email">
   </div>
   <div class="form-group">
     <label for="comment">Comment:</label>

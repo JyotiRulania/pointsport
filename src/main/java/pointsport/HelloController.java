@@ -7,11 +7,14 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -50,6 +53,10 @@ ProductDAO pdao;
 @Autowired
 CartDAO crdao;
 
+@Autowired
+JavaMailSender mail;
+
+
 
 @Autowired
 ServletContext context;
@@ -66,6 +73,65 @@ ServletContext context;
 		}
 	
 	}
+	
+	@RequestMapping(value="/sendQuery" , method = RequestMethod.POST)
+	public String emailconfirm( HttpServletRequest req , HttpServletResponse resp ) {
+
+		String uemail = req.getParameter("email");
+		String subject = req.getParameter("subject");
+		String msg = req.getParameter("message");
+		
+		System.out.println( uemail );
+		System.out.println( subject );
+		System.out.println( msg );
+
+		SimpleMailMessage email = new SimpleMailMessage();
+		
+		email.setFrom("pointsport123@gmail.com");
+		email.setTo("jyotirulania5@gmail.com");
+		email.setSubject(uemail+":"+subject);
+		email.setText(msg);
+
+		try
+		{
+			mail.send(email);
+			
+			System.out.println("Mail 1 Sent");
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+
+		String uemail1 = req.getParameter("email");
+
+
+		System.out.println( uemail1 );
+		
+		
+		email.setTo(uemail1);
+		email.setSubject("Welcome to pointsport");
+		email.setText(" Thanks for Contacting Us \n We will get back to you soon \n\n Regards, \n The pointsport Team");
+		
+		
+		try
+		{
+			mail.send(email);
+			
+			System.out.println("Mail 2 Sent");
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		
+		return "emailconfrm";
+	}
+	
+	
+	
 	
 	@RequestMapping(value = "/initiateFlow", method = RequestMethod.GET)
 	public String redirect(HttpServletRequest request) {

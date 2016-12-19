@@ -1,4 +1,3 @@
-
 package pointsport;
 
 import java.util.List;
@@ -25,6 +24,7 @@ import pointsport.cartmodel.Cart;
 import pointsport.cartmodel.CartDAO;
 import pointsport.product.Product;
 import pointsport.product.ProductDAO;
+import pointsport.usermodel.UserDAO;
 
 @RestController
 public class RESTController {
@@ -35,6 +35,7 @@ public class RESTController {
 	@Autowired
 	ProductDAO pdao;
 
+	
 	@RequestMapping(value = "/REST/fetchAllItems", method = RequestMethod.POST)
 	public ResponseEntity<String> fetchAllItems()
 	{	
